@@ -1,0 +1,90 @@
+on:
+  push:
+    branches:
+      - main
+  # will enable periodically building later
+  # schedule:
+  #   # * is a special character in YAML so you have to quote this string
+  #   - cron:  '*/10 * * * *'
+  #   # - cron:  '* * * * *'
+
+name: Build Image for local deploy
+
+jobs:
+  deploy:
+    name: build-and-push
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: prod
+      AWS_ACCOUNT_ID: "706173320044"
+      PRODUCT_PREFIX: uniframe
+      AWS_CD_ROLE: uniframe-prod-cd-service-role
+      AWS_ENV_REGION: eu-west-1
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.UNIFRAME_CD_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.UNIFRAME_CD_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_ENV_REGION }}
+
+    - name: Load aws-cli
+      id: aws-cli
+      run: |
+        pip --no-cache-dir install awscli==1.19.72
+        aws sts assume-role --role-arn "arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.AWS_CD_ROLE }}" --role-session-name github-actions-cd --external-id github.com | tee >(echo "AccessKeyId=$(jq .Credentials.AccessKeyId | tr -d '"')" >> $GITHUB_ENV)  >(echo "SessionToken=$( jq .Credentials.SessionToken | tr -d '"')" >> $GITHUB_ENV ) >(echo "SecretAccessKey=$(jq .Credentials.SecretAccessKey | tr -d '"')" >> $GITHUB_ENV )
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.UNIFRAME_CD_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.UNIFRAME_CD_AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ env.AWS_ENV_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      env:
+        AWS_ACCESS_KEY_ID: ${{ env.AccessKeyId }}
+        AWS_SECRET_ACCESS_KEY: ${{ env.SecretAccessKey }}
+        AWS_SESSION_TOKEN: ${{ env.SessionToken }}
+
+    - name: Get Backend Params
+      id: get-backend-params
+      run: |
+        aws ssm get-parameters --names "${{ env.PRODUCT_PREFIX }}-${{ env.DEPLOY_ENV }}-ssm-backend-local-repo-name" --query "Parameters[*].Value | [0]" | echo "BACKEND_REPOSITORY=$(tr -d '"')" >> $GITHUB_ENV
+        aws ssm get-parameters --names "${{ env.PRODUCT_PREFIX }}-${{ env.DEPLOY_ENV }}-ssm-pg-local-repo-name" --query "Parameters[*].Value | [0]" | echo "PG_REPOSITORY=$(tr -d '"')" >> $GITHUB_ENV
+      env:
+        AWS_ACCESS_KEY_ID: ${{ env.AccessKeyId }}
+        AWS_SECRET_ACCESS_KEY: ${{ env.SecretAccessKey }}
+        AWS_SESSION_TOKEN: ${{ env.SessionToken }}
+
+    - name: Get Git hash, branch name and date
+      id: vars
+      shell: bash
+      run: |
+        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        # IMAGE_TAG: ${{ steps.date.outputs.date }}-${{ github.sha }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Build a docker container and push it to ECR
+        docker build --build-arg DEPLOY_ENV=${{ env.DEPLOY_ENV }} --build-arg PRODUCT_PREFIX=${{ env.PRODUCT_PREFIX }} --build-arg IMAGE_BUILD_DATE=${{ steps.date.outputs.date }} --build-arg IMAGE_TAG=$IMAGE_TAG -t $ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG . -f Dockerfile 
+        # tag with commit sha
+        docker tag $ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$BACKEND_REPOSITORY:latest 
+        # push both latest and commit sha tag to ECR
+        docker push $ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$BACKEND_REPOSITORY:latest
+        echo "::set-output name=image::$ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
+        # build PG image for local deployment
+        docker build -t $ECR_REGISTRY/$PG_REPOSITORY:$IMAGE_TAG . -f Dockerfile.PG
+        docker tag $ECR_REGISTRY/$PG_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$PG_REPOSITORY:latest  
+        docker push $ECR_REGISTRY/$PG_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$PG_REPOSITORY:latest
+        echo "::set-output name=image::$ECR_REGISTRY/$PG_REPOSITORY:$IMAGE_TAG"        

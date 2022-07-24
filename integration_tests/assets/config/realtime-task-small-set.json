@@ -1,0 +1,45 @@
+{
+    "name": "placeholder",
+    "description": "small dataset",
+    "is_public": false,
+    "type": "NAME_MATCHING_REALTIME",
+     "ext_info": {
+          "nm_status": "init",
+          "gt_dataset_config":{
+              "dataset_id": 0,
+              "search_key": "company name"
+          },
+          "computation_resource": {
+              "computation_type": "multi-thread",
+              "computation_config": {"resource_tshirt_size": "Small"}
+          },
+          "running_parameter": {"TTL_enable": true, "TTL": "P0DT0H30M0S"},
+          "search_option": {
+              "top_n": 2,
+              "threshold": 0.1,
+              "selected_cols": []
+          },
+          "algorithm_option": {
+              "type": "VECTOR_BASED",
+              "value": {
+                  "preprocessing_option": {
+                      "case_sensitive": false,
+                      "company_legal_form_processing": true,
+                      "initial_abbr_processing": false,
+                      "punctuation_removal": true,
+                      "accented_char_normalize": false,
+                      "shorthands_format_processing": false
+                  },
+                  "tokenizer_option": "WORD",
+                  "cos_match_type": "EXACT",
+                  "postprocessing_option": {"placeholder": "placeholder"}
+              }
+          },
+          "abcxyz_privacy": {
+              "data_retention_time": "P30DT0H0M0S",
+              "log_retention_time": "P30DT0H0M0S"
+          },
+          "abcxyz_security": {"encryption": "sse-s3"},
+          "process_id": 0
+      }
+  }

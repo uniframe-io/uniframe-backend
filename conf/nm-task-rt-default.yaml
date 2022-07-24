@@ -1,0 +1,41 @@
+name: "change-to-your-name"
+description: "change-to-your-description"
+is_public: false
+type: NAME_MATCHING_REALTIME
+ext_info:
+  nm_status: init
+  gt_dataset_config:
+    dataset_id: 0
+    search_key: ""
+  computation_resource:
+    computation_type: multi-thread
+    computation_config:
+      resource_tshirt_size: Small
+  running_parameter:
+    TTL_enable: true
+    # P[DD]DT[HH]H[MM]M[SS]S (ISO 8601 format for timedelta)
+    # https://en.wikipedia.org/wiki/ISO_8601#Durations
+    TTL: P0DT0H30M0S
+  search_option:
+    top_n: 1
+    threshold: 0.50
+    selected_cols: []
+  algorithm_option:
+    type: VECTOR_BASED
+    value:
+      preprocessing_option:
+        case_sensitive: False
+        company_legal_form_processing: True
+        initial_abbr_processing: False
+        punctuation_removal: True
+        accented_char_normalize: False
+        shorthands_format_processing: False
+      tokenizer_option: SUBWORD
+      cos_match_type: EXACT
+      postprocessing_option:
+        placeholder: placeholder      
+  abcxyz_privacy:
+    data_retention_time: P30DT0H0M0S
+    log_retention_time: P30DT0H0M0S
+  abcxyz_security:
+    encryption: sse-s3

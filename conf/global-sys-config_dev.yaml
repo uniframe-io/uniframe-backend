@@ -1,0 +1,26 @@
+# This is the global configuration file of name matching solution
+# platform, IO setup
+platform: aws
+file_store: s3
+# localfs_volume_loc is only needed when file_store is localfs
+localfs_volume_loc: dummy
+# bucket_name is initiated later in load function
+bucket_name: dummy
+region: eu-west-1
+api_store: pg
+filestore_put_object_url_ttl: 1800
+filestore_get_object_url_ttl: 1800
+# actually we don't need executor. Revisit it later, maybe delete it
+#executor: CeleryExecutor
+executor: LocalExecutor
+app_log_group: "/aws/containerinsights/uniframe-dev/application"
+
+kubernetes:
+  in_cluster: True
+  tcp_keep_idle: 120
+  tcp_keep_intvl: 30
+  tcp_keep_cnt: 6
+  cluster_context:
+  config_file:
+  enable_tcp_keepalive: True
+  verify_ssl: True

@@ -1,0 +1,84 @@
+[
+    {
+        "query_request": {
+            "query_keys": ["zhe"],
+            "search_option": {
+                "top_n": 2,
+                "threshold": 0.01,
+                "selected_cols": []
+            }    
+        },
+        "expected_value": {
+            "query_result": [
+                ["zhe", 0, "Zhe Sun", 0.7071],
+                ["zhe", 2, "Zhe General Dutch Sun", 0.4539]
+            ],
+            "columns": [
+                "nm_name",
+                "gt_row_no",
+                "matched_name",
+                "score"
+            ],
+            "search_option": {
+                "top_n": 2,
+                "threshold": 0.01,
+                "selected_cols": []
+            }
+        }
+    },
+    {
+        "query_request": {
+            "query_keys": ["zhe", "xi"],
+            "search_option": {
+                "top_n": 1,
+                "threshold": 0.01,
+                "selected_cols": []
+            }    
+        },
+        "expected_value": {
+            "query_result": [
+                ["zhe", 0, "Zhe Sun", 0.7071],
+                ["xi", -1, "N/A", 0.0]
+            ],
+            "columns": [
+                "nm_name",
+                "gt_row_no",
+                "matched_name",
+                "score"
+            ],
+            "search_option": {
+                "top_n": 1,
+                "threshold": 0.01,
+                "selected_cols": []
+            }
+        }
+    },
+    {
+        "query_request": {
+            "query_keys": ["zhe", "xi"],
+            "search_option": {
+                "top_n": 1,
+                "threshold": 0.01,
+                "selected_cols": ["company id"]
+            }    
+        },
+        "expected_value": {
+            "query_result": [
+                ["zhe", 0, "Zhe Sun", 0.7071, 1],
+                ["xi", -1, "N/A", 0.0, "N/A"]
+            ],
+            "columns": [
+                "nm_name",
+                "gt_row_no",
+                "matched_name",
+                "score",
+                "company id"
+            ],
+            "search_option": {
+                "top_n": 1,
+                "threshold": 0.01,
+                "selected_cols": ["company id"]
+            }
+        }
+    }         
+]

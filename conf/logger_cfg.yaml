@@ -1,0 +1,113 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  simple:
+    format: '%(asctime)-8s %(name)-8s [%(levelname)s] %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+  file:
+    class: logging.FileHandler
+    level: WARNING
+    filename: '/tmp/nm.log'
+    formatter: simple
+loggers:
+  fastapi:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  nm_algo:
+    level: DEBUG
+    handlers:
+    - console
+    - file
+    propagate: false   
+  compute:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_config:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_dateset:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_group:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_media:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_nm_task:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_oauth:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_permission:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  app_stat:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false                            
+  app_user:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false 
+  k8s_command:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false 
+  test:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false    
+  utils:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false
+  housekeeper:
+    level: INFO
+    handlers:
+    - console
+    - file
+    propagate: false       

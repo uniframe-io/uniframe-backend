@@ -1,0 +1,10 @@
+### generate revision file
+```
+alembic revision --autogenerate -m "xxx"
+```
+
+### upgrade
+```
+alembic upgrade head
+```
+

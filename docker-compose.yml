@@ -1,0 +1,85 @@
+version: "3.9"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    command: >
+      bash -c "sleep 5 && ./scripts/init-database.sh  && alembic upgrade head 
+      && uvicorn server.api.main:app --reload --host 0.0.0.0 --port 8000"      
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment :
+     - API_RUN_LOCATION
+     - DEPLOY_ENV
+     - PRODUCT_PREFIX
+    env_file:
+      - .env
+  db:
+    image: postgres:12.1-alpine
+    volumes:
+      - ./scripts/database/postgres/init.sql:/init.sql
+      - ./scripts/init-database.sh:/init-database.sh
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nm
+    ports:
+      - 5432:5432
+  rq_redis:
+    image: redis:6.2.2-alpine
+    ports:
+      - "6379:6379"
+    # volumes:
+    #   - ./redis:/data      
+  rq_worker_batch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app      
+    command: >
+      bash -c "rq worker nm_batch_worker --url redis://rq_redis:6379  --path /app"
+    environment :
+      - API_RUN_LOCATION      
+      - DEPLOY_ENV
+      - PRODUCT_PREFIX       
+    env_file:
+      - .env    
+    depends_on:
+      - rq_redis
+  rq_worker_realtime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app      
+    command: >
+      bash -c "rq worker nm_realtime_worker --url redis://rq_redis:6379  --path /app"
+    expose:
+      - "8002"
+    environment :
+      - API_RUN_LOCATION 
+      - DEPLOY_ENV
+      - PRODUCT_PREFIX           
+    env_file:
+      - .env    
+    depends_on:
+      - rq_redis
+  # rq-dashboard:
+  #   image: eoranged/rq-dashboard
+  #   ports:
+  #     - "9181:9181"
+  #   depends_on:
+  #     - rq_redis
+  #   environment:
+  #     - RQ_DASHBOARD_REDIS_URL=redis://rq_redis:6379
+  #     - RQ_DASHBOARD_USERNAME=rq
+  #     - RQ_DASHBOARD_PASSWORD=password
+volumes:
+    postgres_data:

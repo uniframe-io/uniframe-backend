@@ -1,0 +1,14 @@
+compute:
+  max_rt_nr_queries: 100  # maximal query string in real-time
+  max_running_task_nr: 1  # maximal running task in parallel
+  # N.B. current implementation is quota in **last rolling 30 days**
+  # TODO: will change to real monthly API quota in future, when we enable payment
+  max_running_api_call_per_month: 100  # call running API monthly quota
+
+ui_permission:
+  change_task_ttl: false
+  compute_resource_permission:
+    Small: true
+    Medium: false
+    Large: false
+  max_upload_dataset_size: 5  # unit MB

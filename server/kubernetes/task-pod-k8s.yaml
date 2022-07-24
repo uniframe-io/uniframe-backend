@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: nm
+  name: nm-pod-placeholder
+  labels:
+    app: nm-pod-placeholder
+spec:
+  containers:
+    - name: base
+      image: placeholder
+      resources:
+        requests:
+          memory: "200Mi"
+          cpu: 0.25
+        limits:
+          memory: "264Mi"
+          cpu: 0.25      
+      command: ["placeholder"]
+      args: ["placeholder", "placehoder"]
+  nodeSelector:
+    node-pool: nm-task
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 120

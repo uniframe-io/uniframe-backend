@@ -1,0 +1,116 @@
+FROM python:3.8-slim-buster
+LABEL maintainer="uniframe-io"
+
+# Never prompt the user for choices on installation/configuration of packages
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM linux
+
+# NMS
+ARG NAME_MATCHING_VERSION=0.1.0
+ARG NAME_MATCHING_USER_HOME=/opt/uniframe-backend
+ARG PYTHON_DEPS=""
+ENV NAME_MATCHING_HOME=${NAME_MATCHING_USER_HOME}
+
+# Backend environment variables
+ARG DEPLOY_ENV
+ENV DEPLOY_ENV=${DEPLOY_ENV}
+ARG PRODUCT_PREFIX
+ENV PRODUCT_PREFIX=${PRODUCT_PREFIX}
+ARG DOMAIN_NAME
+ENV DOMAIN_NAME=${DOMAIN_NAME}
+# IMAGE_TAG env is used for minikube and k8s. Used when spawn a nm-task pod
+ARG IMAGE_TAG
+ENV IMAGE_TAG=${IMAGE_TAG}
+
+
+# Define en_US.
+ENV LANGUAGE en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LC_CTYPE en_US.UTF-8
+ENV LC_MESSAGES en_US.UTF-8
+
+# Disable noisy "Handling signal" log messages:
+# ENV GUNICORN_CMD_ARGS --log-level WARNING
+
+RUN set -ex \
+    && apt-get update -yqq \
+    && apt-get upgrade -yqq \
+    && apt-get install -yqq --no-install-recommends \
+        freetds-dev \
+        libkrb5-dev \
+        libsasl2-dev \
+        libssl-dev \
+        libffi-dev \
+        libpq-dev \
+        freetds-bin \
+        build-essential \
+        default-libmysqlclient-dev \
+        apt-utils \
+        curl \
+        locales \
+        zip \
+        make \
+        gcc \
+        g++ \
+        zlib1g-dev \
+        python-openssl \
+        libbz2-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        llvm \
+        libncurses5-dev \
+        libncursesw5-dev \
+        xz-utils \
+        libffi-dev \
+        liblzma-dev \
+        postgresql-client \
+        unzip \
+        jq \
+    && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
+    && locale-gen \
+    && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    && pip install -U pip setuptools wheel \
+    && pip install pyOpenSSL \
+    && pip install ndg-httpsclient \
+    && pip uninstall -y  SQLAlchemy \
+    && pip uninstall -y  redis \
+    && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
+    && apt-get purge --auto-remove -yqq $buildDeps \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf \
+        /var/lib/apt/lists/* \
+        /tmp/* \
+        /var/tmp/* \
+        /usr/share/man \
+        /usr/share/doc \
+        /usr/share/doc-base \
+        /root/.cache/pip
+
+# install AWS cli
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install\
+    && pip install --upgrade awscli
+
+# source code migration
+RUN useradd -m -d ${NAME_MATCHING_USER_HOME} runner
+COPY . ${NAME_MATCHING_USER_HOME}
+RUN pip install -r ${NAME_MATCHING_USER_HOME}/requirements.txt
+RUN pip install -e ${NAME_MATCHING_HOME}/ 
+
+COPY scripts/entrypoint.sh /entrypoint.sh
+
+# Dir setup
+RUN chown -R runner: ${NAME_MATCHING_USER_HOME}
+RUN chown -R runner: /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+RUN cat /etc/passwd
+EXPOSE 8000 8001 8010
+
+USER runner
+RUN whoami
+WORKDIR ${NAME_MATCHING_USER_HOME}
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["backend-public"]

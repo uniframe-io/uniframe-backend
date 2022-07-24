@@ -1,0 +1,14 @@
+compute:
+  max_rt_nr_queries: 100000
+  max_running_task_nr: 10000
+  # N.B. current implementation is quota in **last rolling 30 days**
+  # TODO: will change to real monthly API quota in future, when we enable payment
+  max_running_api_call_per_month: 1000000  # call running API quota per month
+
+ui_permission:
+  change_task_ttl: true
+  compute_resource_permission:
+    Small: true
+    Medium: true
+    Large: true
+  max_upload_dataset_size: 100  # unit MB

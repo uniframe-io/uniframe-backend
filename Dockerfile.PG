@@ -1,0 +1,7 @@
+FROM postgres:12.1-alpine
+
+WORKDIR /
+
+COPY /scripts/database/postgres/init.sql /init.sql
+COPY /scripts/init-database.sh /init-database.sh
+COPY /scripts/database/postgres/add_default_user.sh /add_default_user.sh

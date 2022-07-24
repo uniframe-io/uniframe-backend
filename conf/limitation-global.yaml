@@ -1,0 +1,19 @@
+# This is limitation globally
+nm_cfg:
+  nm_task_name_min_len: 5
+  nm_task_name_max_len: 32
+  nm_task_desc_max_len: 200
+
+  max_matching_nr: 10  # max matching return result
+  running_task_min_ttl: 1  # seconds
+  
+task_pod_cfg:
+  Small:
+    nr_cpu: 0.2
+    mem_size: 150
+  Medium:
+    nr_cpu: 1
+    mem_size: 1024 #unit: MiB
+  Large:
+    nr_cpu: 2
+    mem_size: 2048 #unit: MiB

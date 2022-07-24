@@ -1,0 +1,165 @@
+{
+    "dashboard_data_table": {
+        "text":"Number of datasets created by you or shared with you",
+        "link": "/terminology/#dataset"
+    },
+    "dataset_list": {
+        "text": "A dataset is a 2-dimensional plain text table. It can be created, edited, and deleted, and will be used by string matching tasks",
+        "link": "/terminology/#dataset"
+    },
+    "dataset_create": {
+        "text": "You can set up dataset name and description, and upload a file. The created dataset will be used by string matching tasks",
+        "link": "/manual/#dataset"
+    },
+    "dataset_create_upload": {
+        "text": "Click \"choose file\" button to select a local file. Currently we only support CSV file",
+        "link": "/manual/#dataset"
+    },
+    "dataset_detail": {
+        "text": "This page shows the detailed dataset information",
+        "link": "/manual/#dataset"
+    },    
+    "dataset_preview": {
+        "text": "Preview shows the header and the top 5 rows of the dataset.",
+        "link": "/manual/#dataset"
+    },
+    "dataset_edit": {
+        "text": "You can change the name and description. If you want to upload another file, please create another dataset",
+        "link": "/manual/#dataset"
+    },	
+
+    "dashboard_matching_task_table": {
+        "text": "The status of the name matching tasks",
+        "link": "/terminology/#string-matching-task"
+    },
+    "rt_matching_task_list": {
+        "text": "The realtime matching task matches a small amount string with a groundtruth dataset in a near realtime",
+        "link": "/terminology/#real-time-string-matching-task"
+    }, 
+    "rt_matching_task_create": {
+        "text": "Create a managed realtime matching task to match a small amount string with a groundtruth dataset in a near realtime",
+        "link": "/manual/#create-real-time-string-matching-task"
+    },		
+    "rt_matching_task_detail": {
+        "text": "The detailed realtime matching task information. You can do the realtime matching here",
+        "link": "/terminology/#real-time-string-matching-task"
+    },    
+    "rt_matching_task_match": {
+        "text": "Input a list of strings and get the matching result in near realtime",
+        "link": "/terminology/#real-time-string-matching-task"
+    },    
+
+    "batch_matching_task_list": {
+        "text": "The batch matching task matches a large matching dataset with a groundtruth dataset",
+        "link": "/terminology/#batch-string-matching-task"
+    }, 
+    "batch_matching_task_create": {
+        "text": "Create a managed batch matching task to match a large matching dataset with a groundtruth dataset.",
+        "link": "/manual/#create-batch-string-matching-task"
+    },
+    "batch_matching_task_detail": {
+        "text": "The detailed batch matching task information. You can download the matching result here",
+        "link": "/terminology/#batch-string-matching-task"
+    },
+    "batch_matching_task_result_preview": {
+        "text": "When batch task complete, the preview data shows the header and the top 5 rows of the matching result.",
+        "link": "/terminology/#batch-string-matching-task"
+    },    
+
+    "matching_task_select_gt_dataset": {
+        "text": "Groundtruth dataset is the dataset to be matched. Please select one dataset from your dataset list, and select the match key(s)",
+        "link": "/terminology/#groundtruth-dataset"
+    },
+    "matching_task_select_matching_dataset": {
+        "text": "Matching dataset is the dataset you want to match to the groundtruth dataset. Please select one dataset from your dataset list, and select the match key(s)",
+        "link": "/terminology/#matching-dataset"
+    },
+
+    "matching_options": {
+        "text": "Matching options decide the matching result",
+        "link": "/terminology/#matching-options"
+    },
+    "matching_options_topn": {
+        "text": "the most similar N results for each matching key",
+        "link": "/terminology/#number-of-matching-result"
+    },
+    "matching_options_threshold": {
+        "text": "only similarity score greater than the threshold can be regarded as a matching",
+        "link": "/terminology/#number-of-matching-result"
+    },
+    "matching_options_extra_columns": {
+        "text": "pick up columns from groundtruth dataset in the matching result",
+        "link": "/terminology/#columns-as-matching-result"
+    },
+
+    "name_description": {
+        "text": "Input a unique name in the name field and any information in description field",
+        "link": "/terminology/#name-and-description"
+    },
+
+    "computation_setup": {
+        "text": "Select computation resource for string matching task",
+        "link": "/terminology/#computation-resource"
+    },
+    "computation_setup_resource": {
+        "text": "For free user, 'Small' type is the only option. For enterprise user, there is no limitation and you can customize based on your requirement",
+        "link": "/terminology/#t-shirt-size"
+    },
+    "computation_setup_type": {
+        "text": "Select the computation type",
+        "link": "/terminology/#computation-type"
+    },
+    "computation_setup_ttl_batch": {
+        "text": "For free user, it is 15 minutes and unchangable. For enterprise user, you can change the value",
+        "link": "/"
+    },
+    "computation_setup_ttl_rt": {
+        "text": "For free user, it is 30 minutes and unchangable. For enterprise user, you can change the value",
+        "link": "/"
+    },    
+
+    "advanced_algo_setup": {
+        "text": "Adapt the matching algorithm to your dataset",
+        "link": "/terminology/#advanced-algorithm-options"
+    },
+    "advanced_algo_setup_type": {
+        "text": "Select algorithm type, edit distance or vector-based distance",
+        "link": "/terminology/#algorithm-type"
+    },
+    "advanced_algo_setup_case_sensitive": {
+        "text": "Setup case sensitive preprocessing",
+        "link": "/terminology/#case-sensitive"
+    },
+    "advanced_algo_setup_legal_name": {
+        "text": "Normalize company legal form",
+        "link": "/terminology/#company-legal-form-normalization"
+    },
+    "advanced_algo_setup_init_abbreviation": {
+        "text": "Extract initial letter as abbreviation",
+        "link": "/terminology/#initial-abbreviations"
+    },
+    "advanced_algo_setup_rm_punct": {
+        "text": "Remove punctuation",
+        "link": "/terminology/#remove-punctuation"
+    },
+    "advanced_algo_setup_normalize_accent_char": {
+        "text": "Normalize accented characters, e.g., converting Ä, Â, Ă to A",
+        "link": "/terminology/#normalize-accent-character"
+    },
+    "advanced_algo_setup_shorthand": {
+        "text": "Replace string by common used shorthand expression",
+        "link": "/terminology/#shorthand-format-processing"
+    },			
+    "advanced_algo_setup_tokenize_option": {
+        "text": "Tokenization method: word or subword",
+        "link": "/terminology/#vector-based-algorithm"
+    },
+    "advanced_algo_setup_cosine_match_type": {
+        "text": "Similarity computation: exact matching or approximately matching",
+        "link": "/terminology/#vector-similarity"
+    },
+    "defaultHelp": {
+        "text": "Get started with our help document",
+        "link": "/"
+    }
+}
